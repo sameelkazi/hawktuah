@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { Search, Plus, Filter, MoreHorizontal, MapPin, AlertCircle, Box } from 'lucide-react';
 import { Product } from '../types';
 import Card from '../components/ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from '../context/ToastContext';
 
 interface ProductsProps {
   products: Product[];
@@ -11,6 +13,7 @@ interface ProductsProps {
 const Products: React.FC<ProductsProps> = ({ products }) => {
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [search, setSearch] = useState('');
+  const { showToast } = useToast();
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -25,7 +28,10 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Inventory</h2>
           <p className="text-slate-500 dark:text-gray-400 mt-1">Manage stock levels and product catalog.</p>
         </div>
-        <button className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium shadow-[0_0_20px_-5px_rgba(37,99,235,0.5)] transition-all transform hover:scale-105 active:scale-95 border border-blue-500/50">
+        <button 
+            onClick={() => showToast('Product creation wizard coming soon!', 'info')}
+            className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium shadow-[0_0_20px_-5px_rgba(37,99,235,0.5)] transition-all transform hover:scale-105 active:scale-95 border border-blue-500/50"
+        >
           <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
           <span>Add Product</span>
         </button>

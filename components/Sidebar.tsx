@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                 <img src="https://picsum.photos/100/100" alt="User" className="w-full h-full object-cover" />
              </div>
              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-slate-900 dark:text-white">Alex Morgan</span>
+                <span className="text-sm font-semibold text-slate-900 dark:text-white">Manan Bhanushali</span>
                 <span className="text-xs text-slate-500 dark:text-gray-500">Warehouse Mgr.</span>
              </div>
           </div>

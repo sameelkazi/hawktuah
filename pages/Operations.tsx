@@ -1,16 +1,20 @@
+
 import React, { useState } from 'react';
 import { Operation, OperationStatus } from '../types';
 import { MOCK_OPERATIONS, MOCK_PRODUCTS } from '../constants';
-import { List, Kanban, Plus, Printer, X, ChevronRight, Clock, CheckCircle2, AlertOctagon } from 'lucide-react';
+import { List, Kanban, Plus, Printer, X, ChevronRight, Clock, CheckCircle2, AlertOctagon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../components/ui/Card';
+import { useToast } from '../context/ToastContext';
 
 const Operations: React.FC = () => {
+  const { showToast } = useToast();
   const [view, setView] = useState<'kanban' | 'list'>('list');
   const [operations, setOperations] = useState<Operation[]>(MOCK_OPERATIONS);
   const [selectedOp, setSelectedOp] = useState<Operation | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeType, setActiveType] = useState<'All' | 'Receipt' | 'Delivery' | 'Internal' | 'Adjustment'>('All');
+  const [isValidating, setIsValidating] = useState(false);
 
   const statuses: OperationStatus[] = ['Draft', 'Waiting', 'Ready', 'Done'];
 
@@ -30,12 +34,30 @@ const Operations: React.FC = () => {
     };
     setSelectedOp(newOp);
     setIsFormOpen(true);
+    showToast(`New ${type} operation created`, 'info');
   };
 
   const handleStatusChange = (op: Operation, newStatus: OperationStatus) => {
+    if (newStatus === 'Done') {
+        validateOperation(op);
+        return;
+    }
+    
     const updated = { ...op, status: newStatus };
     setSelectedOp(updated);
     setOperations(operations.map(o => o.id === op.id ? updated : o));
+    showToast(`Status updated to ${newStatus}`, 'info');
+  };
+
+  const validateOperation = (op: Operation) => {
+    setIsValidating(true);
+    setTimeout(() => {
+        const updated = { ...op, status: 'Done' as OperationStatus };
+        setSelectedOp(updated);
+        setOperations(operations.map(o => o.id === op.id ? updated : o));
+        setIsValidating(false);
+        showToast('Operation validated successfully', 'success');
+    }, 800);
   };
 
   return (
@@ -265,11 +287,12 @@ const Operations: React.FC = () => {
                                 <button 
                                     key={status}
                                     onClick={() => handleStatusChange(selectedOp, status)}
+                                    disabled={selectedOp.status === 'Done'}
                                     className={`flex-1 py-2 px-4 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
                                         isActive ? 'bg-white dark:bg-blue-600 text-slate-900 dark:text-white shadow-sm dark:shadow-lg dark:shadow-blue-500/20' : 
                                         isPast ? 'text-blue-600 dark:text-blue-400' :
                                         'text-slate-500 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white'
-                                    }`}
+                                    } ${selectedOp.status === 'Done' && !isActive ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     {status}
                                 </button>
@@ -282,12 +305,26 @@ const Operations: React.FC = () => {
                         {selectedOp.status !== 'Done' && (
                             <button 
                                 onClick={() => handleStatusChange(selectedOp, 'Done')}
-                                className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold shadow-lg shadow-green-500/20 transition-all"
+                                disabled={isValidating}
+                                className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold shadow-lg shadow-green-500/20 transition-all flex items-center justify-center gap-2"
                             >
-                                Validate Operation
+                                {isValidating ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" />
+                                        Validating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle2 size={20} />
+                                        Validate Operation
+                                    </>
+                                )}
                             </button>
                         )}
-                         <button className="px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl transition-all flex items-center justify-center gap-2">
+                         <button 
+                            onClick={() => showToast('Print job sent to printer', 'success')}
+                            className="px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl transition-all flex items-center justify-center gap-2"
+                         >
                             <Printer size={18} />
                         </button>
                     </div>
@@ -355,7 +392,10 @@ const Operations: React.FC = () => {
                             </table>
                         </div>
                         {selectedOp.status !== 'Done' && (
-                            <button className="mt-4 w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/10 text-slate-500 dark:text-gray-500 hover:text-blue-600 dark:hover:text-white hover:border-blue-400 dark:hover:border-white/30 hover:bg-slate-50 dark:hover:bg-white/5 transition-all">
+                            <button 
+                                onClick={() => showToast('Product selector not implemented in demo', 'warning')}
+                                className="mt-4 w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/10 text-slate-500 dark:text-gray-500 hover:text-blue-600 dark:hover:text-white hover:border-blue-400 dark:hover:border-white/30 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                            >
                                 + Add Product Line
                             </button>
                         )}

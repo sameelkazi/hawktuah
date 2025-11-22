@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import { MOCK_PRODUCTS, MOCK_OPERATIONS } from './constants';
 import { Menu, Bell, Search, Sun, Moon } from 'lucide-react';
+import { ToastProvider } from './context/ToastContext';
 
 // Loading Component
 const LoadingScreen = () => (
@@ -102,7 +103,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </button>
             <div className="hidden md:flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-white/10">
               <div className="text-right">
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Alex Morgan</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">Manan Bhanushali</p>
                 <p className="text-xs text-slate-500 dark:text-gray-500">Admin</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 p-[2px]">
@@ -160,17 +161,19 @@ const App: React.FC = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/*" element={
-          <AppLayout>
-            <AnimatedRoutes />
-          </AppLayout>
-        } />
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/*" element={
+            <AppLayout>
+              <AnimatedRoutes />
+            </AppLayout>
+          } />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 };
 
