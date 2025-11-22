@@ -1,21 +1,26 @@
 
 import React, { useState } from 'react';
-import { Search, Plus, Filter, MoreHorizontal, MapPin, Box, ScanBarcode, ArrowUpDown } from 'lucide-react';
+import { Search, Plus, Filter, MoreHorizontal, MapPin, Box, ScanBarcode, ArrowUpDown, X } from 'lucide-react';
 import { Product } from '../types';
 import Card from '../components/ui/Card';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../context/ToastContext';
+import { useData } from '../context/DataContext';
 
-interface ProductsProps {
-  products: Product[];
-}
-
-const Products: React.FC<ProductsProps> = ({ products }) => {
+const Products: React.FC = () => {
+  const { products, addProduct } = useData();
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [search, setSearch] = useState('');
   const { showToast } = useToast();
   const [activeCategory, setActiveCategory] = useState('All');
+  
+  // Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newProduct, setNewProduct] = useState<Partial<Product>>({
+    category: 'Raw Material',
+    status: 'In Stock'
+  });
 
   const filteredProducts = products.filter(p => 
     (activeCategory === 'All' || p.category === activeCategory) &&
@@ -24,6 +29,31 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
   );
 
   const categories = ['All', 'Raw Material', 'Furniture', 'Electronics', 'Chemicals', 'Tools', 'Packaging'];
+
+  const handleSaveProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProduct.name || !newProduct.sku || !newProduct.price) {
+        showToast('Please fill required fields', 'error');
+        return;
+    }
+    
+    const productToAdd: Product = {
+        id: Date.now().toString(),
+        name: newProduct.name,
+        sku: newProduct.sku,
+        category: newProduct.category || 'Uncategorized',
+        stock: Number(newProduct.stock) || 0,
+        minStock: Number(newProduct.minStock) || 10,
+        price: Number(newProduct.price),
+        location: newProduct.location || 'WH/Stock',
+        status: (Number(newProduct.stock) || 0) === 0 ? 'Out of Stock' : 'In Stock'
+    };
+
+    addProduct(productToAdd);
+    showToast('Product added successfully', 'success');
+    setIsAddModalOpen(false);
+    setNewProduct({ category: 'Raw Material', status: 'In Stock' });
+  };
 
   return (
     <div className="space-y-6">
@@ -39,7 +69,7 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
                 <span className="hidden sm:inline">Scan Item</span>
              </button>
              <ShimmerButton 
-                onClick={() => showToast('Product creation wizard coming soon!', 'info')}
+                onClick={() => setIsAddModalOpen(true)}
                 className="shadow-lg shadow-blue-500/20"
                 background="linear-gradient(to right, #2563EB, #06B6D4)"
                 shimmerColor="#ffffff"
@@ -157,7 +187,7 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
                                 isLowStock ? 'bg-red-100 border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400' : 
                                 'bg-emerald-100 border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400'
                             }`}>
-                                {product.status}
+                                {isOutStock ? 'No Stock' : isLowStock ? 'Low Stock' : 'In Stock'}
                             </div>
                         </div>
 
@@ -230,7 +260,7 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
                                 isLowStock ? 'bg-red-50 border-red-100 text-red-600 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400' : 
                                 'bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400'
                             }`}>
-                                {product.status === 'Low Stock' ? 'Low' : 'OK'}
+                                {isOutStock ? 'No Stock' : isLowStock ? 'Low' : 'OK'}
                             </span>
                         </div>
                     </div>
@@ -244,6 +274,60 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
           )})}
         </AnimatePresence>
       </div>
+
+      {/* Add Product Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <motion.div 
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    onClick={() => setIsAddModalOpen(false)}
+                />
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="relative bg-white dark:bg-[#0F172A] w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 overflow-hidden"
+                >
+                    <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">New Product</h3>
+                        <button onClick={() => setIsAddModalOpen(false)} className="text-slate-500 hover:text-slate-900 dark:hover:text-white"><X size={20} /></button>
+                    </div>
+                    <form onSubmit={handleSaveProduct} className="p-6 space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                             <div className="col-span-2">
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-1">Product Name</label>
+                                <input autoFocus required value={newProduct.name || ''} onChange={e => setNewProduct({...newProduct, name: e.target.value})} className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-blue-500" placeholder="e.g. Titanium Screws" />
+                             </div>
+                             <div>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-1">SKU</label>
+                                <input required value={newProduct.sku || ''} onChange={e => setNewProduct({...newProduct, sku: e.target.value})} className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-blue-500" placeholder="e.g. TI-500" />
+                             </div>
+                             <div>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-1">Price ($)</label>
+                                <input type="number" step="0.01" required value={newProduct.price || ''} onChange={e => setNewProduct({...newProduct, price: Number(e.target.value)})} className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-blue-500" placeholder="0.00" />
+                             </div>
+                             <div>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-1">Initial Stock</label>
+                                <input type="number" value={newProduct.stock || ''} onChange={e => setNewProduct({...newProduct, stock: Number(e.target.value)})} className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-blue-500" placeholder="0" />
+                             </div>
+                             <div>
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-1">Category</label>
+                                <select value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value})} className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white outline-none focus:border-blue-500">
+                                    {categories.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                             </div>
+                        </div>
+                        <div className="pt-4 flex justify-end gap-3">
+                            <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 text-slate-600 dark:text-gray-300 font-medium hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg">Cancel</button>
+                            <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20">Create Product</button>
+                        </div>
+                    </form>
+                </motion.div>
+            </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

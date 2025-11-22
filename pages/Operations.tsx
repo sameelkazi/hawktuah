@@ -1,63 +1,90 @@
+
 import React, { useState } from 'react';
 import { Operation, OperationStatus } from '../types';
-import { MOCK_OPERATIONS, MOCK_PRODUCTS } from '../constants';
 import { List, Kanban, Plus, Printer, X, ChevronRight, Clock, CheckCircle2, AlertOctagon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../components/ui/Card';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useToast } from '../context/ToastContext';
+import { useData } from '../context/DataContext';
 
 const Operations: React.FC = () => {
+  const { operations, products, addOperation, updateOperation, validateOperation } = useData();
   const { showToast } = useToast();
   const [view, setView] = useState<'kanban' | 'list'>('list');
-  const [operations, setOperations] = useState<Operation[]>(MOCK_OPERATIONS);
   const [selectedOp, setSelectedOp] = useState<Operation | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [activeType, setActiveType] = useState<'All' | 'Receipt' | 'Delivery' | 'Internal' | 'Adjustment'>('All');
   const [isValidating, setIsValidating] = useState(false);
 
   const statuses: OperationStatus[] = ['Draft', 'Waiting', 'Ready', 'Done'];
-
   const filteredOps = operations.filter(op => activeType === 'All' || op.type === activeType);
 
   const handleNewOperation = (type: string) => {
     const newOp: Operation = {
       id: Date.now().toString(),
-      reference: `WH/${type.substring(0,3).toUpperCase()}/000${operations.length + 1}`,
+      reference: `WH/${type.substring(0,3).toUpperCase()}/${Date.now().toString().slice(-4)}`,
       type: type as any,
-      source: 'WH/Stock',
-      destination: 'Customer',
+      source: type === 'Receipt' ? 'Vendor' : 'WH/Stock',
+      destination: type === 'Delivery' ? 'Customer' : 'WH/Stock',
       contact: '',
       status: 'Draft',
       scheduleDate: new Date().toISOString().split('T')[0],
       items: []
     };
+    
+    addOperation(newOp);
     setSelectedOp(newOp);
     setIsFormOpen(true);
-    showToast(`New ${type} operation created`, 'info');
+    showToast(`New ${type} draft created`, 'info');
   };
 
   const handleStatusChange = (op: Operation, newStatus: OperationStatus) => {
     if (newStatus === 'Done') {
-        validateOperation(op);
+        handleValidate(op);
         return;
     }
     
     const updated = { ...op, status: newStatus };
+    updateOperation(updated);
     setSelectedOp(updated);
-    setOperations(operations.map(o => o.id === op.id ? updated : o));
-    showToast(`Status updated to ${newStatus}`, 'info');
   };
 
-  const validateOperation = (op: Operation) => {
+  const handleValidate = (op: Operation) => {
+    if (op.items.length === 0) {
+        showToast('Cannot validate empty operation', 'error');
+        return;
+    }
+
     setIsValidating(true);
     setTimeout(() => {
-        const updated = { ...op, status: 'Done' as OperationStatus };
-        setSelectedOp(updated);
-        setOperations(operations.map(o => o.id === op.id ? updated : o));
+        validateOperation(op);
         setIsValidating(false);
-        showToast('Operation validated successfully', 'success');
+        // Update local selected op to reflect change
+        setSelectedOp({...op, status: 'Done'});
+        showToast('Operation validated & stock updated', 'success');
     }, 800);
+  };
+
+  const addItemToOp = (op: Operation, productId: string) => {
+     const exists = op.items.find(i => i.productId === productId);
+     if (exists) return;
+
+     const updatedOp = {
+         ...op,
+         items: [...op.items, { productId, quantity: 1, done: 1 }]
+     };
+     updateOperation(updatedOp);
+     setSelectedOp(updatedOp);
+  };
+
+  const updateItemQty = (op: Operation, productId: string, qty: number) => {
+     const updatedOp = {
+         ...op,
+         items: op.items.map(i => i.productId === productId ? { ...i, quantity: qty, done: qty } : i)
+     };
+     updateOperation(updatedOp);
+     setSelectedOp(updatedOp);
   };
 
   return (
@@ -310,7 +337,7 @@ const Operations: React.FC = () => {
                         {selectedOp.status !== 'Done' && (
                             <div className="flex-1">
                                 <ShimmerButton 
-                                    onClick={() => handleStatusChange(selectedOp, 'Done')}
+                                    onClick={() => handleValidate(selectedOp)}
                                     disabled={isValidating}
                                     className="w-full shadow-lg shadow-green-500/20"
                                     background="linear-gradient(90deg, #16a34a, #10b981)"
@@ -350,7 +377,18 @@ const Operations: React.FC = () => {
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-1">
                             <label className="text-xs uppercase tracking-wider text-slate-500 dark:text-gray-500 font-bold ml-1">Contact</label>
-                            <div className="bg-slate-100 dark:bg-white/5 rounded-xl px-4 py-3 text-slate-900 dark:text-white border border-slate-200 dark:border-white/5">{selectedOp.contact || 'Internal'}</div>
+                            <input 
+                                type="text"
+                                value={selectedOp.contact}
+                                onChange={e => {
+                                    const up = {...selectedOp, contact: e.target.value};
+                                    setSelectedOp(up);
+                                    updateOperation(up);
+                                }}
+                                disabled={selectedOp.status === 'Done'}
+                                className="w-full bg-slate-100 dark:bg-white/5 rounded-xl px-4 py-3 text-slate-900 dark:text-white border border-slate-200 dark:border-white/5 outline-none focus:border-blue-500"
+                                placeholder="Contact Name"
+                            />
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs uppercase tracking-wider text-slate-500 dark:text-gray-500 font-bold ml-1">Schedule Date</label>
@@ -380,7 +418,7 @@ const Operations: React.FC = () => {
                                 </thead>
                                 <tbody className="divide-y divide-slate-200 dark:divide-white/5">
                                     {selectedOp.items.map((item, i) => {
-                                        const product = MOCK_PRODUCTS.find(p => p.id === item.productId);
+                                        const product = products.find(p => p.id === item.productId);
                                         return (
                                             <tr key={i} className="group hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
                                                 <td className="p-4 pl-6">
@@ -392,7 +430,12 @@ const Operations: React.FC = () => {
                                                     {selectedOp.status === 'Done' ? (
                                                         <span className="text-green-600 dark:text-green-400 font-bold">{item.done}</span>
                                                     ) : (
-                                                        <input type="number" defaultValue={item.done} className="w-20 bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded px-2 py-1 text-slate-900 dark:text-white text-center" />
+                                                        <input 
+                                                            type="number" 
+                                                            value={item.done}
+                                                            onChange={(e) => updateItemQty(selectedOp, item.productId, Number(e.target.value))}
+                                                            className="w-20 bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded px-2 py-1 text-slate-900 dark:text-white text-center" 
+                                                        />
                                                     )}
                                                 </td>
                                             </tr>
@@ -409,12 +452,23 @@ const Operations: React.FC = () => {
                             </table>
                         </div>
                         {selectedOp.status !== 'Done' && (
-                            <button 
-                                onClick={() => showToast('Product selector not implemented in demo', 'warning')}
-                                className="mt-4 w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/10 text-slate-500 dark:text-gray-500 hover:text-blue-600 dark:hover:text-white hover:border-blue-400 dark:hover:border-white/30 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-                            >
-                                + Add Product Line
-                            </button>
+                            <div className="mt-4 p-4 border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/5">
+                                <label className="block text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider mb-2">Add Product</label>
+                                <div className="flex gap-2">
+                                    <select 
+                                        className="flex-1 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white"
+                                        onChange={(e) => {
+                                            if(e.target.value) addItemToOp(selectedOp, e.target.value);
+                                            e.target.value = "";
+                                        }}
+                                    >
+                                        <option value="">Select a product...</option>
+                                        {products.map(p => (
+                                            <option key={p.id} value={p.id}>{p.name} (Current: {p.stock})</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>

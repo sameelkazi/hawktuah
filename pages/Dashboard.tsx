@@ -9,23 +9,22 @@ import {
   Scan, Zap, ClipboardCheck, Wifi, Activity, Calendar, MoreHorizontal
 } from 'lucide-react';
 import Card from '../components/ui/Card';
-import { KPIData } from '../types';
+import { useData } from '../context/DataContext';
 import { motion } from 'framer-motion';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { useToast } from '../context/ToastContext';
 
-interface DashboardProps {
-  kpi: KPIData;
-}
-
-// Enhanced Palette
 const COLORS = ['#3B82F6', '#06B6D4', '#8B5CF6', '#10B981'];
 
-// Mock Data for Sparklines
 const sparklineData = [
   { v: 10 }, { v: 25 }, { v: 15 }, { v: 35 }, { v: 20 }, { v: 45 }, { v: 30 }, { v: 55 }
 ];
 
-const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
+const Dashboard: React.FC = () => {
+  const { kpi, moves, products, operations } = useData();
+  const { showToast } = useToast();
+
+  // Derived chart data based on recent moves (mocked distribution for demo visual)
   const stockData = [
     { name: 'Mon', receipts: 40, deliveries: 24 },
     { name: 'Tue', receipts: 30, deliveries: 13 },
@@ -36,22 +35,31 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
     { name: 'Sun', receipts: 34, deliveries: 43 },
   ];
 
-  const activityLog = [
-    { id: 1, title: 'Large Receipt from SteelCo', type: 'Receipt', time: '10 mins ago', status: 'Done' },
-    { id: 2, title: 'Urgent Delivery to Acme', type: 'Delivery', time: '32 mins ago', status: 'Ready' },
-    { id: 3, title: 'Stock Adjustment: Rack A2', type: 'Adjustment', time: '1 hour ago', status: 'Done' },
-    { id: 4, title: 'Internal Transfer to QC', type: 'Internal', time: '2 hours ago', status: 'Waiting' },
-  ];
+  // Generate category pie data from real products
+  const categoryCounts: Record<string, number> = {};
+  products.forEach(p => {
+    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
+  });
+  
+  const pieData = Object.keys(categoryCounts).map(cat => ({
+    name: cat,
+    value: categoryCounts[cat]
+  })).slice(0, 4); 
 
-  const pieData = [
-    { name: 'Raw Material', value: 400 },
-    { name: 'Finished', value: 300 },
-    { name: 'Components', value: 300 },
-    { name: 'Scrap', value: 200 },
-  ];
+  // Recent activity from actual moves/ops
+  const recentActivity = [...operations]
+    .sort((a, b) => parseInt(b.id) - parseInt(a.id)) // rough sort by id/time
+    .slice(0, 4)
+    .map(op => ({
+      id: op.id,
+      title: `${op.type}: ${op.contact || 'Internal'}`,
+      type: op.type,
+      time: 'Recent',
+      status: op.status
+    }));
 
-  const QuickAction = ({ icon: Icon, label, color, hoverColor }: { icon: any, label: string, color: string, hoverColor: string }) => (
-    <button className="group relative flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10 transition-all hover:-translate-y-1 overflow-hidden shadow-sm dark:shadow-none">
+  const QuickAction = ({ icon: Icon, label, color, hoverColor, onClick }: any) => (
+    <button onClick={onClick} className="group relative flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10 transition-all hover:-translate-y-1 overflow-hidden shadow-sm dark:shadow-none">
       <div className={`absolute inset-0 bg-gradient-to-br ${hoverColor} opacity-0 group-hover:opacity-10 transition-opacity`} />
       <div className={`mb-3 p-3 rounded-xl bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/10 group-hover:scale-110 transition-transform ${color}`}>
         <Icon size={24} strokeWidth={1.5} />
@@ -78,7 +86,6 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
                 <h3 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight font-mono">{value}</h3>
             </div>
         </div>
-        {/* Sparkline Area */}
         <div className="h-12 w-full mt-2">
              <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={sparklineData}>
@@ -149,7 +156,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             value={kpi.totalProducts} 
             icon={Package} 
             color={{ bg: 'bg-blue-100 dark:bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', hex: '#3B82F6' }} 
-            trend="12.5%" 
+            trend="LIVE" 
             trendDir="up" 
         />
         <StatCard 
@@ -157,7 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             value={kpi.pendingReceipts} 
             icon={Truck} 
             color={{ bg: 'bg-green-100 dark:bg-green-500/10', text: 'text-green-600 dark:text-green-400', hex: '#10B981' }} 
-            trend="3.2%" 
+            trend="ACT" 
             trendDir="up" 
         />
         <StatCard 
@@ -165,7 +172,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             value={kpi.pendingDeliveries} 
             icon={Zap} 
             color={{ bg: 'bg-purple-100 dark:bg-purple-500/10', text: 'text-purple-600 dark:text-purple-400', hex: '#8B5CF6' }} 
-            trend="0.8%" 
+            trend="ACT" 
             trendDir="down" 
         />
         <StatCard 
@@ -173,7 +180,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             value={kpi.lowStockItems} 
             icon={AlertTriangle} 
             color={{ bg: 'bg-red-100 dark:bg-red-500/10', text: 'text-red-600 dark:text-red-400', hex: '#EF4444' }} 
-            trend="5.0%" 
+            trend="CRIT" 
             trendDir="down" 
         />
       </div>
@@ -234,7 +241,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
                  <button className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">View All</button>
              </div>
              <div className="grid gap-3">
-                {activityLog.map((log, i) => (
+                {recentActivity.map((log, i) => (
                     <Card key={log.id} delay={0.5 + (i * 0.1)} className="!bg-white dark:!bg-white/5 hover:border-blue-300 dark:hover:border-white/20 transition-all group" noPadding>
                         <div className="p-4 flex items-center gap-4">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${
@@ -264,6 +271,11 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
                         </div>
                     </Card>
                 ))}
+                {recentActivity.length === 0 && (
+                  <div className="text-center p-8 text-slate-500 dark:text-gray-500 italic">
+                    No recent activity. Create an operation to see it here.
+                  </div>
+                )}
              </div>
           </div>
         </div>
@@ -274,10 +286,10 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
           <div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 px-1">Quick Actions</h3>
             <div className="grid grid-cols-2 gap-4">
-                <QuickAction icon={Scan} label="Scanner" color="text-cyan-500" hoverColor="from-cyan-500/20 to-blue-500/20" />
-                <QuickAction icon={Zap} label="Transfer" color="text-blue-500" hoverColor="from-blue-500/20 to-indigo-500/20" />
-                <QuickAction icon={ClipboardCheck} label="Stock Audit" color="text-emerald-500" hoverColor="from-emerald-500/20 to-teal-500/20" />
-                <QuickAction icon={MoreHorizontal} label="More" color="text-purple-500" hoverColor="from-purple-500/20 to-pink-500/20" />
+                <QuickAction onClick={() => showToast('Scanner active', 'info')} icon={Scan} label="Scanner" color="text-cyan-500" hoverColor="from-cyan-500/20 to-blue-500/20" />
+                <QuickAction onClick={() => showToast('Transfer wizard ready', 'info')} icon={Zap} label="Transfer" color="text-blue-500" hoverColor="from-blue-500/20 to-indigo-500/20" />
+                <QuickAction onClick={() => showToast('Audit initiated', 'warning')} icon={ClipboardCheck} label="Stock Audit" color="text-emerald-500" hoverColor="from-emerald-500/20 to-teal-500/20" />
+                <QuickAction onClick={() => showToast('More options...', 'info')} icon={MoreHorizontal} label="More" color="text-purple-500" hoverColor="from-purple-500/20 to-pink-500/20" />
             </div>
           </div>
 
@@ -292,30 +304,34 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             </div>
             
             <div className="h-[220px] w-full relative mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={85}
-                    paddingAngle={6}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {pieData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#0F172A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              {pieData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={65}
+                      outerRadius={85}
+                      paddingAngle={6}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {pieData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#0F172A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-slate-500">No data</div>
+              )}
               {/* Center Text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-3xl font-bold text-slate-900 dark:text-white font-mono">4</span>
+                <span className="text-3xl font-bold text-slate-900 dark:text-white font-mono">{pieData.length}</span>
                 <span className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-gray-400">Categories</span>
               </div>
             </div>
@@ -327,13 +343,13 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
                     <span className="text-slate-600 dark:text-gray-300 font-medium">{entry.name}</span>
                   </div>
-                  <span className="text-slate-400 dark:text-gray-500 font-mono">{Math.round((entry.value / 1200) * 100)}%</span>
+                  <span className="text-slate-400 dark:text-gray-500 font-mono">{Math.round((entry.value / kpi.totalProducts) * 100)}%</span>
                 </div>
               ))}
             </div>
           </Card>
 
-          {/* System Status Widget - Fixed for Light Mode */}
+          {/* System Status Widget */}
           <Card className="!bg-white dark:!bg-black/40 border-t border-slate-200 dark:border-white/10 overflow-hidden relative" noPadding>
                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 dark:opacity-20"></div>
                <div className="p-5 relative z-10">

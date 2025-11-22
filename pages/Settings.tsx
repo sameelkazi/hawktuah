@@ -1,18 +1,22 @@
+
 import React, { useState } from 'react';
-import { MOCK_WAREHOUSES, MOCK_LOCATIONS } from '../constants';
 import { Warehouse, MapPin, Save, Loader2 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import { useToast } from '../context/ToastContext';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { useData } from '../context/DataContext';
 
 const Settings: React.FC = () => {
+  const { warehouses, locations, updateWarehouse } = useData();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'warehouse' | 'locations'>('warehouse');
   const [isSaving, setIsSaving] = useState(false);
+  const [localWarehouses, setLocalWarehouses] = useState(warehouses);
 
   const handleSave = () => {
     setIsSaving(true);
     setTimeout(() => {
+        localWarehouses.forEach(w => updateWarehouse(w));
         setIsSaving(false);
         showToast('Warehouse settings saved successfully', 'success');
     }, 1000);
@@ -42,7 +46,7 @@ const Settings: React.FC = () => {
 
       {activeTab === 'warehouse' ? (
           <div className="space-y-6">
-             {MOCK_WAREHOUSES.map((wh) => (
+             {localWarehouses.map((wh, idx) => (
                  <Card key={wh.id} className="p-6 !bg-white dark:!bg-[#0F172A]/80" noPadding>
                     <div className="p-6">
                         <div className="flex items-center gap-4 mb-6">
@@ -58,15 +62,42 @@ const Settings: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-700 dark:text-gray-400">Warehouse Name</label>
-                                <input type="text" defaultValue={wh.name} className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" />
+                                <input 
+                                    type="text" 
+                                    value={wh.name}
+                                    onChange={e => {
+                                        const updated = [...localWarehouses];
+                                        updated[idx].name = e.target.value;
+                                        setLocalWarehouses(updated);
+                                    }}
+                                    className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" 
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-700 dark:text-gray-400">Short Code</label>
-                                <input type="text" defaultValue={wh.shortCode} className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" />
+                                <input 
+                                    type="text" 
+                                    value={wh.shortCode}
+                                    onChange={e => {
+                                        const updated = [...localWarehouses];
+                                        updated[idx].shortCode = e.target.value;
+                                        setLocalWarehouses(updated);
+                                    }}
+                                    className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" 
+                                />
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-sm font-medium text-slate-700 dark:text-gray-400">Address</label>
-                                <input type="text" defaultValue={wh.address} className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" />
+                                <input 
+                                    type="text" 
+                                    value={wh.address}
+                                    onChange={e => {
+                                        const updated = [...localWarehouses];
+                                        updated[idx].address = e.target.value;
+                                        setLocalWarehouses(updated);
+                                    }}
+                                    className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-colors" 
+                                />
                             </div>
                         </div>
 
@@ -91,7 +122,7 @@ const Settings: React.FC = () => {
           </div>
       ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {MOCK_LOCATIONS.map((loc) => (
+            {locations.map((loc) => (
                 <Card key={loc.id} className="p-6 hover:border-blue-500/50 transition-colors group cursor-pointer !bg-white dark:!bg-[#0F172A]/80" noPadding>
                     <div className="p-6 flex justify-between items-start">
                         <div className="flex items-center gap-3">

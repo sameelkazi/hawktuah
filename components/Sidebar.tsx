@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, X, ChevronRight, Box } from 'lucide-react';
+import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, X, ChevronRight, Box, BrainCircuit } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShimmerButton } from './ui/ShimmerButton';
@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                 <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
                 Stock<span className="text-blue-500">Master</span>
                 </h1>
-                <span className="text--[10px] font-mono text-slate-400 dark:text-gray-500 uppercase tracking-widest">IMS v2.0</span>
+                <span className="text-[10px] font-mono text-slate-400 dark:text-gray-500 uppercase tracking-widest">IMS v2.0</span>
             </div>
           </div>
           <button onClick={toggleMobile} className="md:hidden text-slate-500 dark:text-gray-400">
@@ -110,6 +110,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
               </button>
             );
           })}
+
+          {/* NEXUS AI Feature Button */}
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/5">
+            <div className="px-4 mb-2 text-xs font-bold text-slate-400 dark:text-gray-600 uppercase tracking-widest">Intelligence</div>
+            <button
+              onClick={() => {
+                navigate('/nexus');
+                if (window.innerWidth < 768) toggleMobile();
+              }}
+              className={`relative w-full flex items-center gap-3 px-4 py-3.5 rounded-xl overflow-hidden group transition-all duration-500 ${activeTab === 'nexus' ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/40' : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-white'}`}
+            >
+               {activeTab !== 'nexus' && <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />}
+               
+               <div className="relative z-10 flex items-center gap-3">
+                  <BrainCircuit size={20} className={activeTab === 'nexus' ? 'animate-pulse' : 'group-hover:animate-pulse'} />
+                  <span className="font-bold tracking-wide">Project NEXUS</span>
+                  {activeTab !== 'nexus' && <span className="text-[10px] px-1.5 py-0.5 bg-black/20 rounded text-white/90">BETA</span>}
+               </div>
+            </button>
+          </div>
         </nav>
 
         {/* User Profile Footer */}
