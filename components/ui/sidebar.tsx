@@ -2,7 +2,7 @@ import { cn } from "../../lib/utils";
 import { Link, LinkProps } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 
 interface Links {
   label: string;
@@ -85,17 +85,29 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "h-full px-3 py-4 hidden md:flex md:flex-col bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-2xl border-r border-slate-200 dark:border-white/5 w-[300px] flex-shrink-0",
+        "h-full px-3 py-4 hidden md:flex md:flex-col bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-2xl border-r border-slate-200 dark:border-white/5 w-[300px] flex-shrink-0 relative z-20",
         className
       )}
       animate={{
         width: animate ? (open ? "280px" : "68px") : "280px",
       }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
       {...props}
     >
       {children}
+      {animate && (
+        <button
+          onClick={() => setOpen(!open)}
+          className="absolute -right-3 top-10 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm hover:bg-slate-50 hover:text-slate-900 dark:border-white/10 dark:bg-[#0F172A] dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white transition-colors focus:outline-none"
+          aria-label="Toggle Sidebar"
+        >
+          <motion.div
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChevronRight size={12} strokeWidth={2} />
+          </motion.div>
+        </button>
+      )}
     </motion.div>
   );
 };
@@ -116,7 +128,7 @@ export const MobileSidebar = ({
       >
         <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                S
+                <span className="font-bold text-sm">SM</span>
              </div>
              StockMaster
         </div>
@@ -175,7 +187,7 @@ export const SidebarLink = ({
       )}
       {...props}
     >
-      <div className="text-slate-500 dark:text-slate-400 group-hover/sidebar:text-blue-600 dark:group-hover/sidebar:text-blue-400 transition-colors relative z-10">
+      <div className="text-slate-500 dark:text-slate-400 group-hover/sidebar:text-blue-600 dark:group-hover/sidebar:text-blue-400 transition-colors relative z-10 flex-shrink-0">
         {link.icon}
       </div>
       
