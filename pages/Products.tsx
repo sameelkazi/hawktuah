@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Filter, MoreHorizontal, MapPin, AlertCircle } from 'lucide-react';
+import { Search, Plus, Filter, MoreHorizontal, MapPin, AlertCircle, Box } from 'lucide-react';
 import { Product } from '../types';
 import Card from '../components/ui/Card';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,63 +18,64 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-white">Products</h2>
-          <p className="text-gray-400">Manage your inventory items and stock levels.</p>
+          <h2 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Inventory</h2>
+          <p className="text-slate-500 dark:text-gray-400 mt-1">Manage stock levels and product catalog.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary hover:bg-primary-glow text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-purple-500/25 transition-all transform hover:scale-105 active:scale-95">
-          <Plus size={20} />
-          <span>Create Product</span>
+        <button className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium shadow-[0_0_20px_-5px_rgba(37,99,235,0.5)] transition-all transform hover:scale-105 active:scale-95 border border-blue-500/50">
+          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          <span>Add Product</span>
         </button>
       </div>
 
       {/* Filters */}
-      <Card className="p-4 flex flex-col md:flex-row gap-4 items-center justify-between !bg-glass-100/50">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search by Name, SKU..." 
-            className="w-full bg-black/20 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setView('grid')}
-            className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}
-          >
-            <div className="grid grid-cols-2 gap-0.5 w-5 h-5">
-                <div className="bg-current rounded-sm"></div><div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div><div className="bg-current rounded-sm"></div>
+      <Card className="p-2 flex flex-col md:flex-row gap-4 items-center justify-between !bg-white dark:!bg-white/5 backdrop-blur-md" noPadding>
+        <div className="p-3 w-full flex gap-4 items-center">
+            <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+            <input 
+                type="text" 
+                placeholder="Search SKU, Name, Tag..." 
+                className="w-full bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl py-3 pl-10 pr-4 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all font-mono text-sm"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
             </div>
-          </button>
-          <button 
-             onClick={() => setView('list')}
-             className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'}`}
-          >
-             <div className="flex flex-col gap-0.5 w-5 h-5 justify-center">
-                <div className="bg-current h-0.5 w-full rounded-full"></div>
-                <div className="bg-current h-0.5 w-full rounded-full"></div>
-                <div className="bg-current h-0.5 w-full rounded-full"></div>
+            <div className="flex items-center gap-2 border-l border-slate-200 dark:border-white/10 pl-4">
+            <button 
+                onClick={() => setView('grid')}
+                className={`p-2.5 rounded-lg transition-all ${view === 'grid' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
+            >
+                <div className="grid grid-cols-2 gap-0.5 w-5 h-5">
+                    <div className="bg-current rounded-[2px]"></div><div className="bg-current rounded-[2px]"></div>
+                    <div className="bg-current rounded-[2px]"></div><div className="bg-current rounded-[2px]"></div>
+                </div>
+            </button>
+            <button 
+                onClick={() => setView('list')}
+                className={`p-2.5 rounded-lg transition-all ${view === 'list' ? 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
+            >
+                <div className="flex flex-col gap-0.5 w-5 h-5 justify-center">
+                    <div className="bg-current h-0.5 w-full rounded-full"></div>
+                    <div className="bg-current h-0.5 w-full rounded-full"></div>
+                    <div className="bg-current h-0.5 w-full rounded-full"></div>
+                </div>
+            </button>
             </div>
-          </button>
-          <div className="w-px h-6 bg-white/10 mx-2"></div>
-          <button className="flex items-center gap-2 text-gray-400 hover:text-white px-3 py-2 hover:bg-white/5 rounded-lg transition-all">
-            <Filter size={18} />
-            <span>Filter</span>
-          </button>
         </div>
       </Card>
 
       {/* Content */}
       <div className={`grid ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'} gap-6`}>
         <AnimatePresence>
-          {filteredProducts.map((product, idx) => (
+          {filteredProducts.map((product, idx) => {
+            const stockPercentage = Math.min(100, (product.stock / (product.minStock * 3)) * 100);
+            const isLowStock = product.stock <= product.minStock;
+            
+            return (
             <motion.div
               key={product.id}
               layout
@@ -84,64 +85,79 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
               transition={{ duration: 0.2, delay: idx * 0.05 }}
             >
               {view === 'grid' ? (
-                <div className="group relative bg-glass-100 hover:bg-glass-200 border border-glass-border rounded-2xl p-5 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-                  <div className="absolute top-4 right-4">
-                    <button className="text-gray-500 hover:text-white transition-colors">
-                        <MoreHorizontal size={20} />
-                    </button>
-                  </div>
-                  <div className="mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-xl">
-                    📦
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
-                  <p className="text-xs text-gray-400 mb-4 font-mono">{product.sku}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">On Hand</span>
-                        <span className={`font-semibold ${product.stock <= product.minStock ? 'text-red-400' : 'text-white'}`}>
-                            {product.stock} Units
-                        </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Price</span>
-                        <span className="text-white">${product.price.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-xs text-gray-400">
-                        <MapPin size={12} />
-                        {product.location}
-                    </div>
-                    {product.stock <= product.minStock && (
-                        <div className="flex items-center gap-1 text-xs text-red-400 font-medium bg-red-400/10 px-2 py-1 rounded-full">
-                            <AlertCircle size={12} />
-                            Low Stock
+                <Card className="h-full flex flex-col !bg-white dark:!bg-[#0F172A]/60 hover:shadow-xl dark:hover:!bg-[#0F172A]/90" noPadding>
+                   <div className="p-6 flex flex-col h-full">
+                        <div className="flex justify-between items-start mb-6">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-2xl shadow-inner">
+                                <Box className="text-slate-400 dark:text-gray-400" size={24} />
+                            </div>
+                            <div className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border ${isLowStock ? 'bg-red-100 border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400' : 'bg-emerald-100 border-emerald-200 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400'}`}>
+                                {product.status}
+                            </div>
                         </div>
-                    )}
-                  </div>
-                </div>
+
+                        <div className="mb-6">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 truncate">{product.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-gray-500 font-mono">{product.sku}</p>
+                        </div>
+                        
+                        {/* Visual Stock Bar */}
+                        <div className="space-y-2 mb-6">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-500 dark:text-gray-400">Stock Level</span>
+                                <span className="text-slate-900 dark:text-white font-mono">{product.stock} / {product.minStock * 3}</span>
+                            </div>
+                            <div className="w-full h-2 bg-slate-100 dark:bg-black/40 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${stockPercentage}%` }}
+                                    transition={{ duration: 1, delay: 0.5 }}
+                                    className={`h-full rounded-full ${isLowStock ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]'}`} 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mt-auto pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-gray-400">
+                                <MapPin size={14} className="text-blue-500/70" />
+                                {product.location}
+                            </div>
+                            <span className="text-lg font-bold text-slate-900 dark:text-white">${product.price}</span>
+                        </div>
+                   </div>
+                </Card>
               ) : (
                  // List View
-                <div className="bg-glass-100 hover:bg-glass-200 border border-glass-border rounded-xl p-4 flex items-center justify-between transition-all">
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-lg">📦</div>
+                <div className="group relative bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl p-4 flex items-center justify-between transition-all duration-300 hover:border-blue-400/30 dark:hover:border-blue-500/30 shadow-sm dark:shadow-none">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 flex items-center justify-center">
+                             <Box className="text-slate-400 dark:text-gray-400" size={20} />
+                        </div>
                         <div>
-                            <h3 className="font-bold text-white">{product.name}</h3>
-                            <p className="text-xs text-gray-400 font-mono">{product.sku}</p>
+                            <h3 className="font-bold text-slate-900 dark:text-white">{product.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-gray-500 font-mono">{product.sku}</p>
                         </div>
                     </div>
-                    <div className="hidden md:block text-sm text-gray-300">{product.category}</div>
-                    <div className="text-sm font-mono text-white">{product.stock} Units</div>
-                    <div className="text-sm font-mono text-white">${product.price}</div>
-                    <div className={`text-xs px-3 py-1 rounded-full ${product.stock <= product.minStock ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
-                        {product.status}
+                    <div className="grid grid-cols-4 gap-8 flex-[2] items-center">
+                        <div className="text-sm text-slate-500 dark:text-gray-400 hidden md:block">{product.category}</div>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-sm font-mono text-slate-900 dark:text-white">{product.stock} Units</span>
+                            <div className="w-20 h-1 bg-slate-200 dark:bg-black/40 rounded-full overflow-hidden">
+                                <div className={`h-full ${isLowStock ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${stockPercentage}%` }}></div>
+                            </div>
+                        </div>
+                        <div className="text-sm font-mono text-slate-900 dark:text-white">${product.price}</div>
+                        <div className="flex justify-end">
+                             <button className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg text-slate-400 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white">
+                                <MoreHorizontal size={18} />
+                             </button>
+                        </div>
                     </div>
                 </div>
               )}
             </motion.div>
-          ))}
+          )})}
         </AnimatePresence>
       </div>
     </div>
