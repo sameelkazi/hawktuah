@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Operation, OperationStatus } from '../types';
 import { MOCK_OPERATIONS, MOCK_PRODUCTS } from '../constants';
 import { List, Kanban, Plus, Printer, X, ChevronRight, Clock, CheckCircle2, AlertOctagon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../components/ui/Card';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useToast } from '../context/ToastContext';
 
 const Operations: React.FC = () => {
@@ -83,13 +83,18 @@ const Operations: React.FC = () => {
                 <Kanban size={20} />
             </button>
           </div>
-          <button 
-            onClick={() => handleNewOperation('Delivery')}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all active:scale-95 border border-white/10"
+          <ShimmerButton
+             onClick={() => handleNewOperation('Delivery')}
+             background="linear-gradient(90deg, #2563EB, #0891B2)"
+             shimmerColor="rgba(255,255,255,0.4)"
+             className="shadow-lg shadow-blue-500/20 !rounded-xl"
+             borderRadius="12px"
           >
-            <Plus size={20} />
-            <span>New Transfer</span>
-          </button>
+            <div className="flex items-center gap-2 text-white">
+                <Plus size={20} />
+                <span className="font-bold">New Transfer</span>
+            </div>
+          </ShimmerButton>
         </div>
       </div>
 
@@ -303,30 +308,42 @@ const Operations: React.FC = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-3">
                         {selectedOp.status !== 'Done' && (
-                            <button 
-                                onClick={() => handleStatusChange(selectedOp, 'Done')}
-                                disabled={isValidating}
-                                className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold shadow-lg shadow-green-500/20 transition-all flex items-center justify-center gap-2"
-                            >
-                                {isValidating ? (
-                                    <>
-                                        <Loader2 size={20} className="animate-spin" />
-                                        Validating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <CheckCircle2 size={20} />
-                                        Validate Operation
-                                    </>
-                                )}
-                            </button>
+                            <div className="flex-1">
+                                <ShimmerButton 
+                                    onClick={() => handleStatusChange(selectedOp, 'Done')}
+                                    disabled={isValidating}
+                                    className="w-full shadow-lg shadow-green-500/20"
+                                    background="linear-gradient(90deg, #16a34a, #10b981)"
+                                    shimmerColor="#a7f3d0"
+                                    borderRadius="12px"
+                                >
+                                    <div className="flex items-center justify-center gap-2 text-white font-bold">
+                                        {isValidating ? (
+                                            <>
+                                                <Loader2 size={20} className="animate-spin" />
+                                                Validating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle2 size={20} />
+                                                Validate Operation
+                                            </>
+                                        )}
+                                    </div>
+                                </ShimmerButton>
+                            </div>
                         )}
-                         <button 
+                         <ShimmerButton 
                             onClick={() => showToast('Print job sent to printer', 'success')}
-                            className="px-6 py-3 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl transition-all flex items-center justify-center gap-2"
+                            className="w-auto shadow-sm border border-slate-200 dark:border-white/10 !text-slate-700 dark:!text-white"
+                            background="var(--bg-secondary)"
+                            shimmerColor="#94a3b8"
+                            borderRadius="12px"
                          >
-                            <Printer size={18} />
-                        </button>
+                            <div className="flex items-center justify-center gap-2">
+                                <Printer size={18} />
+                            </div>
+                        </ShimmerButton>
                     </div>
 
                     {/* Form Grid */}

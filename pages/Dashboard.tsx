@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
@@ -11,6 +10,7 @@ import {
 import Card from '../components/ui/Card';
 import { KPIData } from '../types';
 import { motion } from 'framer-motion';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 
 interface DashboardProps {
   kpi: KPIData;
@@ -115,14 +115,29 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
         </div>
         
         <div className="flex gap-3">
-           <button className="px-4 py-2 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl text-sm font-medium text-slate-700 dark:text-white transition-all flex items-center gap-2">
-             <Calendar size={16} className="text-slate-400" />
-             <span>Last 7 Days</span>
-           </button>
-           <button className="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm text-white shadow-[0_0_20px_-5px_rgba(37,99,235,0.5)] transition-all font-medium border border-blue-500/50 flex items-center gap-2">
-             <RefreshCw size={16} />
-             <span>Sync Data</span>
-           </button>
+           <ShimmerButton 
+             className="shadow-sm border border-slate-200 dark:border-white/10 !text-slate-700 dark:!text-white"
+             background="var(--bg-secondary)"
+             shimmerColor="#94a3b8"
+             borderRadius="12px"
+           >
+             <div className="flex items-center gap-2 text-sm font-medium">
+                <Calendar size={16} className="text-slate-400" />
+                <span>Last 7 Days</span>
+             </div>
+           </ShimmerButton>
+
+           <ShimmerButton 
+             className="shadow-lg shadow-blue-500/20"
+             background="linear-gradient(90deg, #3B82F6, #06B6D4)"
+             shimmerColor="#ffffff"
+             borderRadius="12px"
+           >
+             <div className="flex items-center gap-2 text-white text-sm font-medium">
+                <RefreshCw size={16} />
+                <span>Sync Data</span>
+             </div>
+           </ShimmerButton>
         </div>
       </div>
 

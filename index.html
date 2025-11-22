@@ -50,6 +50,11 @@
               'float': 'float 6s ease-in-out infinite',
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'grid-move': 'gridMove 20s linear infinite',
+              "shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
+              "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
+              "element": "fadeSlideIn 0.8s ease-out forwards",
+              "slide-right": "slideRightIn 1s ease-out forwards",
+              "testimonial": "testimonialIn 0.8s ease-out forwards",
             },
             keyframes: {
               float: {
@@ -59,6 +64,37 @@
               gridMove: {
                 '0%': { backgroundPosition: '0 0' },
                 '100%': { backgroundPosition: '50px 50px' },
+              },
+              "spin-around": {
+                "0%": {
+                  transform: "translateZ(0) rotate(0)",
+                },
+                "15%, 35%": {
+                  transform: "translateZ(0) rotate(90deg)",
+                },
+                "65%, 85%": {
+                  transform: "translateZ(0) rotate(270deg)",
+                },
+                "100%": {
+                  transform: "translateZ(0) rotate(360deg)",
+                },
+              },
+              "shimmer-slide": {
+                to: {
+                  transform: "translate(calc(100cqw - 100%), 0)",
+                },
+              },
+              fadeSlideIn: {
+                '0%': { opacity: 0, filter: 'blur(10px)', transform: 'translateY(20px)' },
+                '100%': { opacity: 1, filter: 'blur(0px)', transform: 'translateY(0)' },
+              },
+              slideRightIn: {
+                '0%': { opacity: 0, filter: 'blur(10px)', transform: 'translateX(-20px)' },
+                '100%': { opacity: 1, filter: 'blur(0px)', transform: 'translateX(0)' },
+              },
+              testimonialIn: {
+                '0%': { opacity: 0, filter: 'blur(10px)', transform: 'translateY(20px) scale(0.95)' },
+                '100%': { opacity: 1, filter: 'blur(0px)', transform: 'translateY(0) scale(1)' },
               }
             },
             backgroundImage: {
@@ -86,6 +122,14 @@
       html.dark body {
         background-color: #020617;
         color: #F8FAFC;
+      }
+
+      /* Theme Variables for Dynamic Components */
+      html.light {
+        --bg-secondary: #ffffff;
+      }
+      html.dark {
+        --bg-secondary: rgba(255, 255, 255, 0.05);
       }
       
       /* Noise Texture */
@@ -132,6 +176,25 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #3B82F6;
       }
+
+      /* Animation Delays */
+      .animate-delay-100 { animation-delay: 100ms; }
+      .animate-delay-200 { animation-delay: 200ms; }
+      .animate-delay-300 { animation-delay: 300ms; }
+      .animate-delay-400 { animation-delay: 400ms; }
+      .animate-delay-500 { animation-delay: 500ms; }
+      .animate-delay-600 { animation-delay: 600ms; }
+      .animate-delay-700 { animation-delay: 700ms; }
+      .animate-delay-800 { animation-delay: 800ms; }
+      .animate-delay-900 { animation-delay: 900ms; }
+      .animate-delay-1000 { animation-delay: 1000ms; }
+      .animate-delay-1200 { animation-delay: 1200ms; }
+      .animate-delay-1400 { animation-delay: 1400ms; }
+
+      /* Initial states for animations to prevent flash */
+      .animate-element, .animate-slide-right, .animate-testimonial {
+        opacity: 0;
+      }
     </style>
   <script type="importmap">
 {
@@ -144,7 +207,9 @@
     "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
     "recharts": "https://aistudiocdn.com/recharts@^3.4.1",
     "vite": "https://aistudiocdn.com/vite@^7.2.4",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
+    "tailwind-merge": "https://aistudiocdn.com/tailwind-merge@^2.3.0"
   }
 }
 </script>

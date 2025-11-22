@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { Search, Plus, Filter, MoreHorizontal, MapPin, Box, ScanBarcode, ArrowUpDown } from 'lucide-react';
 import { Product } from '../types';
 import Card from '../components/ui/Card';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../context/ToastContext';
 
@@ -36,13 +38,19 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
                 <ScanBarcode size={20} />
                 <span className="hidden sm:inline">Scan Item</span>
              </button>
-            <button 
+             <ShimmerButton 
                 onClick={() => showToast('Product creation wizard coming soon!', 'info')}
-                className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-blue-500/30 transition-all transform active:scale-95 border border-blue-500/50"
-            >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-            <span>Add Product</span>
-            </button>
+                className="shadow-lg shadow-blue-500/20"
+                background="linear-gradient(to right, #2563EB, #06B6D4)"
+                shimmerColor="#ffffff"
+                shimmerSize="0.1em"
+                borderRadius="0.75rem"
+             >
+                <div className="flex items-center gap-2 text-white">
+                   <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+                   <span className="font-medium">Add Product</span>
+                </div>
+             </ShimmerButton>
         </div>
       </div>
 

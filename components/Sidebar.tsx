@@ -2,6 +2,7 @@ import React from 'react';
 import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, X, ChevronRight, Box } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ShimmerButton } from './ui/ShimmerButton';
 
 interface SidebarProps {
   isMobileOpen: boolean;
@@ -56,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                 <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
                 Stock<span className="text-blue-500">Master</span>
                 </h1>
-                <span className="text-[10px] font-mono text-slate-400 dark:text-gray-500 uppercase tracking-widest">IMS v2.0</span>
+                <span className="text--[10px] font-mono text-slate-400 dark:text-gray-500 uppercase tracking-widest">IMS v2.0</span>
             </div>
           </div>
           <button onClick={toggleMobile} className="md:hidden text-slate-500 dark:text-gray-400">
@@ -125,13 +126,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                 </div>
             </div>
             
-            <button 
+            <ShimmerButton 
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/20 transition-all"
+                className="w-full h-9 !px-3 shadow-sm shadow-red-500/20"
+                background="linear-gradient(90deg, #EF4444, #DC2626)"
+                shimmerColor="#FCA5A5"
+                borderRadius="8px"
             >
-                <LogOut size={14} />
-                <span>Sign Out</span>
-            </button>
+                <div className="flex items-center justify-center gap-2 text-xs font-bold text-white">
+                    <LogOut size={14} />
+                    <span>Sign Out</span>
+                </div>
+            </ShimmerButton>
         </div>
       </aside>
     </>

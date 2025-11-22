@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { MOCK_WAREHOUSES, MOCK_LOCATIONS } from '../constants';
 import { Warehouse, MapPin, Save, Loader2 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import { useToast } from '../context/ToastContext';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 
 const Settings: React.FC = () => {
   const { showToast } = useToast();
@@ -71,14 +71,19 @@ const Settings: React.FC = () => {
                         </div>
 
                         <div className="mt-6 flex justify-end">
-                            <button 
+                            <ShimmerButton 
                                 onClick={handleSave}
                                 disabled={isSaving}
-                                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-medium transition-all shadow-lg shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="shadow-lg shadow-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                                background="linear-gradient(90deg, #3B82F6, #06B6D4)"
+                                shimmerColor="#ffffff"
+                                borderRadius="8px"
                             >
-                                {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                                {isSaving ? 'Saving...' : 'Save Changes'}
-                            </button>
+                                <div className="flex items-center gap-2 text-white font-bold">
+                                    {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                                    {isSaving ? 'Saving...' : 'Save Changes'}
+                                </div>
+                            </ShimmerButton>
                         </div>
                     </div>
                  </Card>
