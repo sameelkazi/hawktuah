@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { motion, Transition } from 'framer-motion';
@@ -139,7 +140,7 @@ export function GlowEffect({
           backfaceVisibility: 'hidden',
         } as React.CSSProperties
       }
-      animate={animations[mode]}
+      animate={animations[mode] as any}
       className={cn(
         'pointer-events-none absolute inset-0 h-full w-full',
         'scale-[var(--scale)] transform-gpu',

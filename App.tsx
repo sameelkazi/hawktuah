@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,6 +10,8 @@ import MoveHistory from './pages/MoveHistory';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 import { Menu, Bell, Search, Sun, Moon } from 'lucide-react';
 import { ToastProvider } from './context/ToastContext';
 import { DataProvider } from './context/DataContext';
@@ -109,7 +112,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </div>
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 p-[2px]">
                 <div className="w-full h-full rounded-full bg-white dark:bg-[#0f0e17] flex items-center justify-center overflow-hidden">
-                    <img src="https://picsum.photos/100/100" alt="User" className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" />
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" />
                 </div>
             </div>
             </div>
@@ -136,6 +139,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/operations" element={<PageTransition><Operations /></PageTransition>} />
         <Route path="/history" element={<PageTransition><MoveHistory /></PageTransition>} />
         <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+        <Route path="/admin-dashboard" element={<PageTransition><AdminDashboard /></PageTransition>} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
@@ -159,6 +163,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/*" element={
               <AppLayout>
                 <AnimatedRoutes />

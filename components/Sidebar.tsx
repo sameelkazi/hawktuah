@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, Box, ArrowRightLeft, History, Settings, LogOut, Truck, Boxes, UserCircle } from 'lucide-react';
+import { LayoutGrid, Box, ArrowRightLeft, History, Settings, LogOut, Truck, Boxes, UserCircle, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar, SidebarBody, SidebarLink } from './ui/sidebar';
@@ -142,6 +143,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
              <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
+                className="space-y-2"
              >
                  <ShimmerButton 
                     onClick={handleLogout}
@@ -162,6 +164,17 @@ const AppSidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                   <LogOut size={20} />
               </button>
           )}
+
+           {/* Small Admin Icon */}
+           <div className="flex justify-center pt-2 border-t border-slate-200 dark:border-white/5">
+              <button 
+                onClick={() => navigate('/admin-login')}
+                className="text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 transition-colors p-1"
+                title="Admin Login"
+              >
+                <ShieldCheck size={16} />
+              </button>
+           </div>
         </div>
       </SidebarBody>
     </Sidebar>

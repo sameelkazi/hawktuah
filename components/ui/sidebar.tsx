@@ -1,3 +1,4 @@
+
 import { cn } from "../../lib/utils";
 import { Link, LinkProps } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
@@ -70,8 +71,8 @@ export const Sidebar = ({
 export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
     <>
-      <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <DesktopSidebar {...(props as any)} />
+      <MobileSidebar {...(props as any)} />
     </>
   );
 };
@@ -80,7 +81,7 @@ export const DesktopSidebar = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof motion.div>) => {
+}: React.ComponentProps<typeof motion.div> & { children?: React.ReactNode }) => {
   const { open, setOpen, animate } = useSidebar();
   return (
     <motion.div
@@ -116,7 +117,7 @@ export const MobileSidebar = ({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) => {
+}: React.HTMLAttributes<HTMLDivElement>) => {
   const { open, setOpen } = useSidebar();
   return (
     <>
