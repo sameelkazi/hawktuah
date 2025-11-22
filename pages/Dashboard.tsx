@@ -68,8 +68,13 @@ const Dashboard: React.FC = () => {
     </button>
   );
 
-  const StatCard = ({ label, value, icon: Icon, color, trend, trendDir }: any) => (
-     <Card className="p-0 !bg-white dark:!bg-white/5 overflow-hidden group" noPadding>
+  const StatCard = ({ label, value, icon: Icon, color, trend, trendDir, glowColor }: any) => (
+     <Card 
+        className="p-0 !bg-white dark:!bg-white/5 overflow-hidden group" 
+        noPadding 
+        glow 
+        glowProps={{ colors: glowColor ? [glowColor, glowColor] : undefined, mode: 'pulse', duration: 8 }}
+     >
         <div className="absolute right-0 top-0 w-32 h-32 bg-gradient-to-br from-white/0 to-white/5 dark:from-white/0 dark:to-white/5 rounded-bl-full pointer-events-none" />
         <div className="p-6 relative z-10">
             <div className="flex justify-between items-start mb-4">
@@ -157,7 +162,8 @@ const Dashboard: React.FC = () => {
             icon={Package} 
             color={{ bg: 'bg-blue-100 dark:bg-blue-500/10', text: 'text-blue-600 dark:text-blue-400', hex: '#3B82F6' }} 
             trend="LIVE" 
-            trendDir="up" 
+            trendDir="up"
+            glowColor="#3B82F6" 
         />
         <StatCard 
             label="Pending Inbound" 
@@ -166,6 +172,7 @@ const Dashboard: React.FC = () => {
             color={{ bg: 'bg-green-100 dark:bg-green-500/10', text: 'text-green-600 dark:text-green-400', hex: '#10B981' }} 
             trend="ACT" 
             trendDir="up" 
+            glowColor="#10B981"
         />
         <StatCard 
             label="Pending Outbound" 
@@ -174,6 +181,7 @@ const Dashboard: React.FC = () => {
             color={{ bg: 'bg-purple-100 dark:bg-purple-500/10', text: 'text-purple-600 dark:text-purple-400', hex: '#8B5CF6' }} 
             trend="ACT" 
             trendDir="down" 
+            glowColor="#8B5CF6"
         />
         <StatCard 
             label="Stock Alerts" 
@@ -182,13 +190,14 @@ const Dashboard: React.FC = () => {
             color={{ bg: 'bg-red-100 dark:bg-red-500/10', text: 'text-red-600 dark:text-red-400', hex: '#EF4444' }} 
             trend="CRIT" 
             trendDir="down" 
+            glowColor="#EF4444"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Main Chart */}
         <div className="lg:col-span-2 space-y-8">
-          <Card className="min-h-[450px] !p-8" delay={0.4}>
+          <Card className="min-h-[450px] !p-8" delay={0.4} glow>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">Flow Analytics</h3>
@@ -294,7 +303,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Asset Distribution */}
-          <Card className="min-h-[340px] !bg-white dark:!bg-white/5" delay={0.5}>
+          <Card className="min-h-[340px] !bg-white dark:!bg-white/5" delay={0.5} glow>
             <div className="flex justify-between items-start mb-2">
                 <div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">Asset Value</h3>
