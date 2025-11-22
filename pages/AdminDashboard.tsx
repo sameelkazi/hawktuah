@@ -105,8 +105,8 @@ const AdminDashboard: React.FC = () => {
             </h2>
             <p className="text-slate-500 dark:text-gray-400 mt-1 ml-1">Manage user roles and system access privileges.</p>
         </div>
-        <div className="flex gap-3">
-            <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 flex items-center w-64 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+        <div className="flex flex-wrap gap-3">
+            <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 flex items-center w-full md:w-64 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
                 <Search size={18} className="text-slate-400 mr-2" />
                 <input 
                     type="text" 

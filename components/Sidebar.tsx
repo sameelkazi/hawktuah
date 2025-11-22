@@ -22,6 +22,15 @@ const AppSidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
     }
   }, [isMobileOpen]);
 
+  const handleSetOpen = (val: boolean | ((prev: boolean) => boolean)) => {
+    const newState = typeof val === 'function' ? val(open) : val;
+    setOpen(newState);
+    // If sidebar closes itself (e.g. X button), sync parent state
+    if (!newState && isMobileOpen) {
+        toggleMobile();
+    }
+  };
+
   const links = [
     { 
         label: 'Dashboard', 
@@ -87,7 +96,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
   };
 
   return (
-    <Sidebar open={open} setOpen={setOpen}>
+    <Sidebar open={open} setOpen={handleSetOpen}>
       <SidebarBody className="justify-between gap-10 h-screen sticky top-0">
         <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
           <div className="mb-10 flex flex-col">
@@ -101,6 +110,11 @@ const AppSidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
                         key={idx} 
                         link={link} 
                         className={`relative group ${isActive ? 'text-blue-600 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                        onClick={() => {
+                          if (window.innerWidth < 768) {
+                            handleSetOpen(false);
+                          }
+                        }}
                     >
                         {/* Active Background Indicator */}
                         {isActive && (

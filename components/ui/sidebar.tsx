@@ -120,52 +120,31 @@ export const MobileSidebar = ({
 }: React.HTMLAttributes<HTMLDivElement>) => {
   const { open, setOpen } = useSidebar();
   return (
-    <>
-      <div
-        className={cn(
-          "h-16 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 w-full"
-        )}
-        {...props}
-      >
-        <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                <span className="font-bold text-sm">SM</span>
-             </div>
-             StockMaster
-        </div>
-        <div className="flex justify-end z-20">
-          <Menu
-            className="text-slate-700 dark:text-slate-200 cursor-pointer"
-            onClick={() => setOpen(!open)}
-          />
-        </div>
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ x: "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-[#020617] p-6 z-[100] flex flex-col justify-between",
-                className
-              )}
-            >
-              <div
-                className="absolute right-6 top-6 z-50 text-slate-700 dark:text-slate-200 cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full"
-                onClick={() => setOpen(!open)}
-              >
-                <X />
-              </div>
-              {children}
-            </motion.div>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ x: "-100%", opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: "-100%", opacity: 0 }}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+          }}
+          className={cn(
+            "fixed h-full w-full inset-0 bg-white dark:bg-[#020617] p-6 z-[100] flex flex-col justify-between md:hidden",
+            className
           )}
-        </AnimatePresence>
-      </div>
-    </>
+        >
+          <div
+            className="absolute right-6 top-6 z-50 text-slate-700 dark:text-slate-200 cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-full"
+            onClick={() => setOpen(!open)}
+          >
+            <X />
+          </div>
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -79,7 +79,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {/* Top Bar */}
         <header className="sticky top-0 z-30 px-4 md:px-6 py-4 bg-white/70 dark:bg-[#020617]/80 backdrop-blur-lg border-b border-slate-200 dark:border-white/5 flex items-center justify-between transition-colors duration-300">
         <div className="flex items-center gap-4 md:hidden">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="text-slate-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white">
             <Menu />
             </button>
             <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">StockMaster</span>
@@ -140,8 +140,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/history" element={<PageTransition><MoveHistory /></PageTransition>} />
         <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
         <Route path="/admin-dashboard" element={<PageTransition><AdminDashboard /></PageTransition>} />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AnimatePresence>
   );

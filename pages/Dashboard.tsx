@@ -127,7 +127,7 @@ const Dashboard: React.FC = () => {
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h2>
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
            <ShimmerButton 
              className="shadow-sm border border-slate-200 dark:border-white/10 !text-slate-700 dark:!text-white"
              background="var(--bg-secondary)"

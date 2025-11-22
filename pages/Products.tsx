@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Plus, Filter, MapPin, Box, ScanBarcode, ArrowUpDown, X, PackagePlus, Pencil, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
 import { Product, Operation } from '../types';
@@ -132,7 +133,7 @@ const Products: React.FC = () => {
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Inventory</h2>
           <p className="text-slate-500 dark:text-gray-400 mt-1">Manage your products, prices, and stock levels.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
              <button className="px-4 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-white/10 transition-colors flex items-center gap-2 font-medium">
                 <ScanBarcode size={20} />
                 <span className="hidden sm:inline">Scan Item</span>
