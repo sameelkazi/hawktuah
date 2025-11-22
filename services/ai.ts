@@ -1,8 +1,19 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
-// Initialize Gemini Client
-// process.env.API_KEY is injected by the environment
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Singleton instance variable
+let ai: GoogleGenAI | null = null;
+
+const getClient = () => {
+  if (!ai) {
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+      console.warn("Gemini API Key is missing. AI features will not work.");
+      throw new Error("API Key is missing. Please check your settings.");
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+};
 
 interface AIConfig {
   useSearch?: boolean;
@@ -20,11 +31,12 @@ interface ImageGenConfig {
  */
 export const generateAIResponse = async (prompt: string, config: AIConfig = {}) => {
   try {
-    const modelId = config.useSearch ? 'gemini-2.5-flash' : 'gemini-2.5-flash';
+    const client = getClient();
+    const modelId = 'gemini-2.5-flash';
     
     const tools = config.useSearch ? [{ googleSearch: {} }] : undefined;
 
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model: modelId,
       contents: prompt,
       config: {
@@ -49,11 +61,12 @@ export const generateAIResponse = async (prompt: string, config: AIConfig = {}) 
  */
 export const generateMarketingImage = async (prompt: string, config: ImageGenConfig = {}) => {
   try {
+    const client = getClient();
     // Ensure valid aspect ratio for the config
     const validRatios = ["1:1", "3:4", "4:3", "9:16", "16:9"];
     const aspectRatio = validRatios.includes(config.aspectRatio || "") ? config.aspectRatio : "1:1";
 
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model: 'gemini-3-pro-image-preview',
       contents: {
         parts: [{ text: prompt }],
@@ -67,7 +80,6 @@ export const generateMarketingImage = async (prompt: string, config: ImageGenCon
     });
 
     // Extract image from response
-    // The response may contain text parts and image parts.
     for (const part of response.candidates?.[0]?.content?.parts || []) {
       if (part.inlineData) {
         return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
