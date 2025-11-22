@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Operation, OperationStatus, Product } from '../types';
+import { Operation, OperationStatus } from '../types';
 import { MOCK_OPERATIONS, MOCK_PRODUCTS } from '../constants';
-import { ArrowRight, Calendar, MoreVertical, List, Kanban, Plus, Printer, X, Save, Search } from 'lucide-react';
+import { List, Kanban, Plus, Printer, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../components/ui/Card';
 
@@ -153,7 +153,7 @@ const Operations: React.FC = () => {
                                 </div>
 
                                 <div className="flex-1 space-y-3 overflow-y-auto pr-2 custom-scrollbar">
-                                    {opsInCol.map((op, idx) => (
+                                    {opsInCol.map((op) => (
                                         <motion.div
                                             key={op.id}
                                             layoutId={op.id}

@@ -1,21 +1,19 @@
 import React from 'react';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
   PieChart, Pie, Cell 
 } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, Package, AlertTriangle, Truck, RefreshCw } from 'lucide-react';
 import Card from '../components/ui/Card';
-import { KPIData, Product } from '../types';
-import { motion } from 'framer-motion';
+import { KPIData } from '../types';
 
 interface DashboardProps {
   kpi: KPIData;
-  products: Product[];
 }
 
 const COLORS = ['#8B5CF6', '#EC4899', '#06B6D4', '#10B981'];
 
-const Dashboard: React.FC<DashboardProps> = ({ kpi, products }) => {
+const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
   const stockData = [
     { name: 'Mon', receipts: 40, deliveries: 24 },
     { name: 'Tue', receipts: 30, deliveries: 13 },
@@ -121,7 +119,7 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi, products }) => {
                   dataKey="value"
                   stroke="none"
                 >
-                  {pieData.map((entry, index) => (
+                  {pieData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

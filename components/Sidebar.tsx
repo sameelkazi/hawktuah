@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
