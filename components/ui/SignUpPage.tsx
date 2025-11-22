@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Eye, EyeOff, User } from 'lucide-react';
 import { Testimonial } from './SignInPage';
@@ -53,15 +52,15 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-[100dvh] flex flex-col md:flex-row font-sans w-full bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white overflow-hidden">
+    <div className="min-h-[100dvh] flex flex-col lg:flex-row font-sans w-full bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-white overflow-x-hidden">
       {/* Left column: sign-up form */}
-      <section className="flex-1 flex items-center justify-center p-8 relative z-10">
-        <div className="w-full max-w-md">
+      <section className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12 relative z-10">
+        <div className="w-full max-w-md mx-auto">
           <div className="flex flex-col gap-6">
             <div className="animate-element animate-delay-100">
-                <h1 className="text-4xl md:text-5xl font-bold leading-tight text-slate-900 dark:text-white">{title}</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-slate-900 dark:text-white">{title}</h1>
             </div>
-            <p className="animate-element animate-delay-200 text-slate-500 dark:text-gray-400 text-lg">{description}</p>
+            <p className="animate-element animate-delay-200 text-slate-500 dark:text-gray-400 text-base sm:text-lg">{description}</p>
 
             <form className="space-y-4" onSubmit={onSignUp}>
               <div className="animate-element animate-delay-300 space-y-1.5">
@@ -117,8 +116,8 @@ export const SignUpPage: React.FC<SignUpPageProps> = ({
 
       {/* Right column: hero image + testimonials */}
       {heroImageSrc && (
-        <section className="hidden lg:block flex-1 relative p-4 overflow-hidden">
-          <div className="animate-slide-right animate-delay-300 absolute inset-4 rounded-[2rem] bg-cover bg-center shadow-2xl overflow-hidden" style={{ backgroundImage: `url(${heroImageSrc})` }}>
+        <section className="hidden lg:block flex-1 relative p-4 h-[100dvh] sticky top-0">
+          <div className="absolute inset-4 rounded-[2rem] bg-cover bg-center shadow-2xl overflow-hidden" style={{ backgroundImage: `url(${heroImageSrc})` }}>
              <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/90 via-[#020617]/20 to-transparent"></div>
              {/* Decorative Elements matching theme */}
              <div className="absolute top-10 right-10 w-32 h-32 bg-blue-500/30 rounded-full blur-[60px] animate-pulse-slow"></div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface CardProps {
@@ -9,17 +9,65 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ children, className = '', delay = 0, noPadding = false }) => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [opacity, setOpacity] = useState(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!divRef.current) return;
+
+    const div = divRef.current;
+    const rect = div.getBoundingClientRect();
+
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  const handleMouseEnter = () => {
+    setOpacity(1);
+  };
+
+  const handleMouseLeave = () => {
+    setOpacity(0);
+  };
+
   return (
     <motion.div
+      ref={divRef}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`relative group rounded-2xl ${className}`}
     >
-      {/* Glowing Border Effect */}
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-blue-500/30 via-cyan-500/30 to-blue-500/30 dark:from-blue-600/50 dark:via-cyan-600/50 dark:to-blue-600/50 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-500 group-hover:animate-pulse-slow" />
+      {/* Spotlight Border Glow */}
+      <div 
+        className="pointer-events-none absolute -inset-[1px] rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-0 blur-sm"
+        style={{
+            background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(59, 130, 246, 0.5), transparent 40%)`
+        }}
+      />
       
-      <div className={`relative h-full bg-white/70 dark:bg-[#0F172A]/80 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl transition-all duration-300 shadow-lg shadow-slate-200/50 dark:shadow-none group-hover:border-blue-300/50 dark:group-hover:border-white/20 overflow-hidden ${noPadding ? '' : 'p-6'}`}>
+      {/* Sharp Border Glow */}
+      <div 
+        className="pointer-events-none absolute -inset-[1px] rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-0"
+        style={{
+            background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(59, 130, 246, 0.4), transparent 40%)`
+        }}
+      />
+
+      {/* Card Content Container */}
+      <div className={`relative h-full bg-white/80 dark:bg-[#0F172A]/90 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl transition-all duration-300 shadow-lg shadow-slate-200/50 dark:shadow-none overflow-hidden z-10 ${noPadding ? '' : 'p-6'}`}>
+        
+        {/* Inner Spotlight Glow */}
+        <div 
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{
+                background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(59, 130, 246, 0.08), transparent 40%)`
+            }}
+        />
+        
         {children}
       </div>
     </motion.div>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
@@ -193,20 +194,20 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             </div>
             <div className="h-[320px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stockData}>
+                <AreaChart data={stockData} margin={{ top: 20, right: 10, left: 0, bottom: 10 }}>
                   <defs>
                     <linearGradient id="colorReceipts" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4}/>
+                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="colorDel" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.4}/>
+                      <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="#06B6D4" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-color, rgba(255,255,255,0.05))" vertical={false} />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dy={15} />
-                  <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dx={-15} />
+                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                  <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dx={-10} />
                   <Tooltip 
                     contentStyle={{ 
                         backgroundColor: 'rgba(15, 23, 42, 0.9)', 
@@ -219,8 +220,8 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
                     itemStyle={{ color: '#fff', fontWeight: 500, fontSize: '13px' }}
                     cursor={{ stroke: 'rgba(59,130,246,0.3)', strokeWidth: 2, strokeDasharray: '4 4' }}
                   />
-                  <Area type="monotone" dataKey="receipts" stroke="#3B82F6" strokeWidth={4} fillOpacity={1} fill="url(#colorReceipts)" animationDuration={1500} />
-                  <Area type="monotone" dataKey="deliveries" stroke="#06B6D4" strokeWidth={4} fillOpacity={1} fill="url(#colorDel)" animationDuration={1500} />
+                  <Area type="monotone" dataKey="receipts" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorReceipts)" animationDuration={1500} />
+                  <Area type="monotone" dataKey="deliveries" stroke="#06B6D4" strokeWidth={3} fillOpacity={1} fill="url(#colorDel)" animationDuration={1500} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
