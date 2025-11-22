@@ -115,13 +115,13 @@ const AnimatedRoutes: React.FC = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="dashboard" element={<PageTransition><Dashboard kpi={kpi} products={MOCK_PRODUCTS} /></PageTransition>} />
-        <Route path="products" element={<PageTransition><Products products={MOCK_PRODUCTS} /></PageTransition>} />
-        <Route path="operations" element={<PageTransition><Operations /></PageTransition>} />
-        <Route path="history" element={<PageTransition><MoveHistory /></PageTransition>} />
-        <Route path="settings" element={<PageTransition><Settings /></PageTransition>} />
-        <Route path="/" element={<Navigate to="dashboard" replace />} />
-        <Route path="*" element={<Navigate to="dashboard" replace />} />
+        <Route path="/dashboard" element={<PageTransition><Dashboard kpi={kpi} products={MOCK_PRODUCTS} /></PageTransition>} />
+        <Route path="/products" element={<PageTransition><Products products={MOCK_PRODUCTS} /></PageTransition>} />
+        <Route path="/operations" element={<PageTransition><Operations /></PageTransition>} />
+        <Route path="/history" element={<PageTransition><MoveHistory /></PageTransition>} />
+        <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AnimatePresence>
   );
