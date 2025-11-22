@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area,
@@ -316,36 +317,36 @@ const Dashboard: React.FC<DashboardProps> = ({ kpi }) => {
             </div>
           </Card>
 
-          {/* System Status Widget */}
-          <Card className="!bg-slate-900 dark:!bg-black/40 border-t border-slate-800 dark:border-white/10 overflow-hidden relative" noPadding>
-               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+          {/* System Status Widget - Fixed for Light Mode */}
+          <Card className="!bg-white dark:!bg-black/40 border-t border-slate-200 dark:border-white/10 overflow-hidden relative" noPadding>
+               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 dark:opacity-20"></div>
                <div className="p-5 relative z-10">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
-                        <Wifi size={14} className="text-green-400" />
+                    <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                        <Wifi size={14} className="text-green-500 dark:text-green-400" />
                         Server Health
                     </h3>
-                    <Activity size={14} className="text-slate-500 animate-pulse" />
+                    <Activity size={14} className="text-slate-400 dark:text-slate-500 animate-pulse" />
                 </div>
                 
                 <div className="space-y-5">
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-gray-400">Latency</span>
-                            <span className="text-xs font-mono text-green-400">24ms</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-400">Latency</span>
+                            <span className="text-xs font-mono text-green-600 dark:text-green-400 font-bold">24ms</span>
                         </div>
-                        <div className="w-full bg-white/10 rounded-full h-1">
-                            <div className="bg-green-500 h-1 rounded-full w-[20%] shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                        <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5">
+                            <div className="bg-green-500 h-1.5 rounded-full w-[20%] shadow-[0_0_10px_rgba(34,197,94,0.4)]"></div>
                         </div>
                     </div>
 
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-gray-400">Database</span>
-                            <span className="text-xs font-mono text-blue-400">Optimal</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-400">Database</span>
+                            <span className="text-xs font-mono text-blue-600 dark:text-blue-400 font-bold">Optimal</span>
                         </div>
-                        <div className="w-full bg-white/10 rounded-full h-1">
-                            <div className="bg-blue-500 h-1 rounded-full w-[80%] shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                        <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5">
+                            <div className="bg-blue-500 h-1.5 rounded-full w-[80%] shadow-[0_0_10px_rgba(59,130,246,0.4)]"></div>
                         </div>
                     </div>
                 </div>
