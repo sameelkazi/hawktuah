@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Operation, OperationStatus, Product } from '../types';
 import { MOCK_OPERATIONS, MOCK_PRODUCTS } from '../constants';
@@ -47,7 +46,7 @@ const Operations: React.FC = () => {
             <h2 className="text-3xl font-bold text-white">Operations</h2>
             <p className="text-gray-400">Manage receipts, deliveries, and transfers.</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 self-start md:self-auto">
           <div className="flex bg-glass-100 rounded-xl p-1 border border-white/10">
             <button 
                 onClick={() => setView('list')}
@@ -73,7 +72,7 @@ const Operations: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex overflow-x-auto gap-2 mb-6 pb-2">
+      <div className="flex overflow-x-auto gap-2 mb-6 pb-2 scrollbar-hide">
           {['All', 'Receipt', 'Delivery', 'Internal', 'Adjustment'].map((type) => (
               <button
                   key={type}
@@ -90,12 +89,12 @@ const Operations: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         {view === 'list' ? (
              <Card className="p-0 overflow-hidden h-full flex flex-col bg-glass-100/50">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-white/5 text-gray-400 font-medium">
+                <div className="overflow-auto custom-scrollbar h-full">
+                  <table className="w-full text-left text-sm min-w-[800px]">
+                    <thead className="bg-white/5 text-gray-400 font-medium sticky top-0 z-10 backdrop-blur-md">
                       <tr>
                         <th className="p-4">Reference</th>
                         <th className="p-4">Contact</th>
@@ -135,7 +134,7 @@ const Operations: React.FC = () => {
              </Card>
         ) : (
             // Kanban View
-            <div className="h-full overflow-x-auto pb-4">
+            <div className="h-full overflow-x-auto pb-4 custom-scrollbar">
                 <div className="flex gap-6 min-w-[1000px] h-full">
                     {statuses.map((status) => {
                         const opsInCol = filteredOps.filter(o => o.status === status);
@@ -191,17 +190,18 @@ const Operations: React.FC = () => {
       <AnimatePresence>
         {isFormOpen && selectedOp && (
             <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-50 bg-[#0f0e17]/95 backdrop-blur-xl flex flex-col"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="fixed inset-0 z-[60] bg-[#0f0e17] overflow-y-auto custom-scrollbar"
             >
                 {/* Form Header */}
-                <div className="border-b border-white/10 p-6 flex items-center justify-between">
+                <div className="sticky top-0 z-50 bg-[#0f0e17]/95 backdrop-blur-xl border-b border-white/10 p-4 md:p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <h2 className="text-2xl font-bold text-white">{selectedOp.reference}</h2>
-                        <span className="text-gray-500 text-sm">/</span>
-                        <span className="text-purple-400 text-sm font-medium">{selectedOp.type}</span>
+                        <span className="hidden md:inline text-gray-500 text-sm">/</span>
+                        <span className="hidden md:inline text-purple-400 text-sm font-medium">{selectedOp.type}</span>
                     </div>
                     <button onClick={() => setIsFormOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
                         <X size={24} className="text-gray-400 hover:text-white" />
@@ -209,30 +209,30 @@ const Operations: React.FC = () => {
                 </div>
 
                 {/* Action Bar */}
-                <div className="p-6 pb-0 flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
-                    <div className="flex gap-2">
+                <div className="p-4 md:p-6 pb-0 flex flex-col xl:flex-row gap-6 justify-between items-start xl:items-center">
+                    <div className="flex flex-wrap gap-2 w-full md:w-auto">
                         {selectedOp.status !== 'Done' && (
                             <button 
                                 onClick={() => handleStatusChange(selectedOp, 'Done')}
-                                className="px-6 py-2 bg-primary hover:bg-primary-glow text-white rounded-lg shadow-lg shadow-purple-500/20 transition-all"
+                                className="flex-1 md:flex-none px-6 py-2 bg-primary hover:bg-primary-glow text-white rounded-lg shadow-lg shadow-purple-500/20 transition-all"
                             >
                                 Validate
                             </button>
                         )}
-                         <button className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-lg transition-all flex items-center gap-2">
+                         <button className="flex-1 md:flex-none px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-lg transition-all flex items-center justify-center gap-2">
                             <Printer size={16} />
                             Print
                         </button>
                         <button 
                             onClick={() => setIsFormOpen(false)}
-                            className="px-4 py-2 bg-transparent hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-all"
+                            className="flex-1 md:flex-none px-4 py-2 bg-transparent hover:bg-white/5 text-gray-400 hover:text-white rounded-lg transition-all"
                         >
                             Cancel
                         </button>
                     </div>
 
                     {/* Status Bar */}
-                    <div className="flex items-center rounded-lg overflow-hidden border border-white/10">
+                    <div className="flex items-center rounded-lg overflow-hidden border border-white/10 w-full md:w-auto overflow-x-auto">
                         {statuses.map((status, idx) => {
                              const isActive = selectedOp.status === status;
                              const isPast = statuses.indexOf(selectedOp.status) > idx;
@@ -240,7 +240,7 @@ const Operations: React.FC = () => {
                              return (
                                 <div 
                                     key={status}
-                                    className={`px-4 py-2 text-sm font-medium flex items-center gap-2 ${
+                                    className={`px-4 py-2 text-sm font-medium flex items-center justify-center flex-1 md:flex-none whitespace-nowrap gap-2 ${
                                         isActive ? 'bg-primary text-white' : 
                                         isPast ? 'bg-primary/20 text-purple-300' :
                                         'bg-glass-100 text-gray-500'
@@ -254,7 +254,7 @@ const Operations: React.FC = () => {
                 </div>
 
                 {/* Form Content */}
-                <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
+                <div className="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
                     <div className="space-y-6">
                          <div className="space-y-2">
                             <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Contact / Partner</label>
@@ -270,14 +270,14 @@ const Operations: React.FC = () => {
                          <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Operation Type</label>
-                                <div className="text-gray-300">{selectedOp.type}</div>
+                                <div className="text-gray-300 py-2 border-b border-white/20">{selectedOp.type}</div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Schedule Date</label>
                                 <input 
                                     type="date" 
                                     value={selectedOp.scheduleDate}
-                                    className="bg-transparent text-white border-b border-white/20 focus:border-purple-500 outline-none w-full"
+                                    className="bg-transparent text-white border-b border-white/20 py-1.5 focus:border-purple-500 outline-none w-full"
                                 />
                             </div>
                          </div>
@@ -296,10 +296,10 @@ const Operations: React.FC = () => {
                 </div>
 
                 {/* Product Lines */}
-                <div className="flex-1 p-6 bg-white/5 mt-4">
+                <div className="flex-1 p-4 md:p-6 bg-white/5 mt-4 min-h-[300px]">
                     <h3 className="text-lg font-bold text-white mb-4">Product Lines</h3>
-                    <div className="bg-black/20 rounded-xl overflow-hidden border border-white/10">
-                        <table className="w-full text-left text-sm">
+                    <div className="bg-black/20 rounded-xl overflow-hidden border border-white/10 overflow-x-auto">
+                        <table className="w-full text-left text-sm min-w-[600px]">
                             <thead className="bg-white/5 text-gray-400">
                                 <tr>
                                     <th className="p-3 pl-6">Product</th>

@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, Menu } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
@@ -23,24 +22,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
   ];
 
   const handleLogout = () => {
-    // In a real app, clear auth tokens here
     navigate('/login');
   };
 
   return (
     <>
       {/* Mobile Overlay */}
-      {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-          onClick={toggleMobile}
-        />
-      )}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            onClick={toggleMobile}
+          />
+        )}
+      </AnimatePresence>
 
-      <motion.aside 
-        initial={{ x: -250 }}
-        animate={{ x: isMobileOpen ? 0 : 0 }}
-        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-[#0f0e17]/90 backdrop-blur-xl border-r border-white/10 z-50 transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+      <aside 
+        className={`fixed md:sticky top-0 left-0 h-screen w-64 bg-[#0f0e17]/95 backdrop-blur-xl border-r border-white/10 z-50 transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -52,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
             </h1>
           </div>
           <button onClick={toggleMobile} className="md:hidden text-gray-400 hover:text-white">
-            <Menu size={24} />
+            <X size={24} />
           </button>
         </div>
 
@@ -99,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
-          <div className="mt-4 flex items-center gap-3 px-4">
+          <div className="mt-4 flex items-center gap-3 px-4 pt-4 border-t border-white/5">
              <div className="w-8 h-8 rounded-full bg-gray-700 border border-gray-600 overflow-hidden">
                 <img src="https://picsum.photos/100/100" alt="User" className="w-full h-full object-cover" />
              </div>
@@ -109,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
              </div>
           </div>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 };
