@@ -1,22 +1,31 @@
+
 import React from 'react';
 import { LayoutDashboard, Package, ArrowRightLeft, History, Settings, LogOut, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
   isMobileOpen: boolean;
   toggleMobile: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isMobileOpen, toggleMobile }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, toggleMobile }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = location.pathname.split('/')[1] || 'dashboard';
+
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'products', label: 'Products', icon: Package },
-    { id: 'operations', label: 'Operations', icon: ArrowRightLeft },
-    { id: 'history', label: 'Move History', icon: History },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'products', label: 'Products', icon: Package, path: '/products' },
+    { id: 'operations', label: 'Operations', icon: ArrowRightLeft, path: '/operations' },
+    { id: 'history', label: 'Move History', icon: History, path: '/history' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
   ];
+
+  const handleLogout = () => {
+    // In a real app, clear auth tokens here
+    navigate('/login');
+  };
 
   return (
     <>
@@ -55,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isMobileOpen
               <button
                 key={item.id}
                 onClick={() => {
-                  setActiveTab(item.id);
+                  navigate(item.path);
                   if (window.innerWidth < 768) toggleMobile();
                 }}
                 className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
@@ -83,7 +92,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isMobileOpen
         </nav>
 
         <div className="absolute bottom-8 left-0 w-full px-6">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors"
+          >
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
